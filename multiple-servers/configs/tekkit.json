@@ -1,0 +1,13 @@
+{
+        "domainName": "tekkit.<YOUR_DOMAIN_HERE>",
+        "proxyTo": "tekkit:25565",
+        "disconnectMessage": "Attempting to start server:\n {{domain}} \n\n This could take a minute. \n\n Return to server list and wait for the server to start.",
+        "docker": {
+                "containerName": "mc-tekkit",
+                "timeout": 300000
+        },
+        "offlineStatus": {
+                "versionName": "1.20.2",
+                "motd": "Server is offline - connect to start"
+        }
+}

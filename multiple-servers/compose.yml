@@ -1,0 +1,78 @@
+name: mc
+
+services:
+  infrared:
+    image: haveachin/infrared:1.3.4 # V2 currently doesn't support stopping/starting docker containers
+    container_name: mc-infrared
+    volumes:
+      - "./configs:/configs" # Infrared server configs
+      - "/var/run/docker.sock:/var/run/docker.sock" # Mount the docker daemon socket file into the container so that Infrared can control docker from within the container.
+    ports:
+      - "25565:25565"
+    restart: unless-stopped
+
+  latest:
+    image: itzg/minecraft-server
+    container_name: mc-latest
+    environment:
+      TYPE: "PAPER"
+      VERSION: "LATEST"
+      EULA: "TRUE"
+      MOTD: "Dumb server for dumb people"
+    volumes:
+      - "./data/latest:/data" # Mount server data to local directory (optional)
+
+  # Example of using .mrpack file
+  custom_modpack:
+    image: itzg/minecraft-server
+    container_name: mc-custom_modpack
+    environment:
+      TYPE: "MODRINTH"
+      VERSION: "LATEST"
+      MODRINTH_MODPACK: "https://domain.example/0.0.2/custom_modpack.mrpack"
+      EULA: "TRUE"
+      MOTD: "Armadillo Lovers Inc."
+      ICON: "<LINK_TO_DISCORD_SERVER_ICON>"
+      OVERRIDE_ICON: true
+      MAX_TICK_TIME: "-1"
+      RENDER_DISTANCE: 18
+      SIMULATION_DISTANCE: 18
+      OPS: Fuglesteg
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MEMORY: "4G"
+    volumes:
+      - "./data/custom_modpack:/data"
+
+  # Example using classic server
+  classic:
+    image: itzg/minecraft-server:java8-multiarch
+    container_name: mc-classic
+    environment:
+      TYPE: "CUSTOM"
+      CUSTOM_SERVER: "https://files.betacraft.uk/server-archive/beta/b1.7.3.jar"
+      ONLINE_MODE: false
+      DISABLE_HEALTHCHECK: "true"
+      EULA: "TRUE"
+      MOTD: "Dumb server for dumb people"
+      MAX_TICK_TIME: "-1"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MEMORY: "2G"
+    volumes:
+      - "./data/classic:/data"
+
+  # Example using local modded forge server
+  tekkit:
+    image: itzg/minecraft-server:java8-multiarch
+    container_name: mc-tekkit
+    environment:
+      TYPE: "FORGE"
+      VERSION: "1.12.2"
+      FORGE_VERSION: "14.23.5.2860"
+      EULA: "TRUE"
+      MOTD: "Tekkit is back OoO"
+      MAX_TICK_TIME: "-1"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      MEMORY: "4G"
+    command: /data/LaunchServer.sh
+    volumes:
+      - "./data/tekkit:/data"
